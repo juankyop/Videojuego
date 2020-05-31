@@ -153,8 +153,9 @@ public class MiJuego extends JFrame {
 		panel_1.setBounds(548, 0, 180, 452);
 		panel.add(panel_1);
 		
+		//se pinta link
 		player=new Link(panel, 300, 0, 0);
-		
+		//se pinta broncas
 		broncas= new Broncas(panel, 80, 130);
 		
 		lblNewLabel = new JLabel("Salud: "+player.getSalud());
