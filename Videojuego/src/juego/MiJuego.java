@@ -1,34 +1,24 @@
 package juego;
 
 import java.awt.BorderLayout;
-
+import java.awt.Color;
 import java.awt.EventQueue;
-
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-import java.awt.Graphics;
-import javax.swing.ImageIcon;
-import javax.swing.Jpanel;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.io.File;
 
-import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.LayoutStyle.ComponentPlacement;
-import javax.swing.SwingUtilities;
-
-import java.awt.Color;
-import java.awt.Container;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.Timer;
 import javax.swing.SwingConstants;
+import javax.swing.Timer;
+import javax.swing.border.EmptyBorder;
 
 public class MiJuego extends JFrame {
 
@@ -36,6 +26,7 @@ public class MiJuego extends JFrame {
 	private JPanel contentPane;
 	static Link player;
 	Broncas broncas;
+	Topo topo;
 	public Clip sonido;
 	boolean partida=false;
 	JLabel lblNewLabel;
@@ -102,14 +93,17 @@ public class MiJuego extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				broncas.getPanel().update(panel.getGraphics());
 				player.getPanel().update(panel.getGraphics());
-				
+				topo.getPanel().update(panel.getGraphics());
+				System.out.println("x-->"+topo.CoordX()+", y-->"+topo.CoordY());
 				ImageIcon MiImagen=new ImageIcon(player.getDireccion());
 				panel.getGraphics().drawImage(MiImagen.getImage(), player.CoordX(), player.CoordY(), panel);
-				
+				topo.movimientoTopo();
 				broncas.movimientoBroncas();
 				ImageIcon ImagenBroncas=new ImageIcon(broncas.getDireccion());
 				panel.getGraphics().drawImage(ImagenBroncas.getImage(), broncas.CoordX(), broncas.CoordY(), panel);
 				
+				ImageIcon ImagenTopo = new ImageIcon(topo.getDireccion());
+				panel.getGraphics().drawImage(ImagenTopo.getImage(), topo.CoordX(), topo.CoordY(), panel);
 				
 				if (collision()) {
 					player.restarSalud();
@@ -129,6 +123,11 @@ public class MiJuego extends JFrame {
 				}
 				if (player.getSalud()<=100&&player.getSalud()>50) {
 					lblNewLabel_4.setIcon(new ImageIcon(MiJuego.class.getResource("/juego/imagenes/uno.png")));
+				}
+				if (player.getSalud()==0) {
+					perder frame = new perder();
+					frame.setVisible(true);
+					dispose();
 				}
 				
 			}
@@ -157,6 +156,8 @@ public class MiJuego extends JFrame {
 		player=new Link(panel, 300, 0, 0);
 		//se pinta broncas
 		broncas= new Broncas(panel, 80, 130);
+		//se pinta topo
+		topo = new Topo(panel, 290,120);
 		
 		lblNewLabel = new JLabel("Salud: "+player.getSalud());
 		
@@ -203,7 +204,7 @@ public class MiJuego extends JFrame {
 		
 	}
 	boolean collision() {
-		if (player.getBounds().intersects(broncas.getBounds())){ 
+		if (player.getBounds().intersects(broncas.getBounds()) || player.getBounds().intersects(topo.getBounds())){ 
 			return true;
 		}
 		else
